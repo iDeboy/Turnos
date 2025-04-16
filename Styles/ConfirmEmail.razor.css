@@ -1,0 +1,17 @@
+﻿@reference "./app.css";
+
+section {
+    @apply flex size-full flex-col items-center justify-center;
+}
+
+::deep .title {
+    @apply text-center text-lg font-bold text-black;
+}
+
+::deep .error {
+    @apply text-center text-lg font-bold text-red-400;
+}
+
+::deep .valid {
+    @apply text-center text-lg font-bold text-green-400;
+}

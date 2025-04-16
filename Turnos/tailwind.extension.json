@@ -1,0 +1,194 @@
+{
+  "$schema": "https://raw.githubusercontent.com/theron-wang/VS2022-Editor-Support-for-Tailwind-CSS/refs/heads/main/tailwind.extension.schema.json",
+  "ConfigurationFiles": [
+    {
+      "Path": "..\\Styles\\app.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\Checkbox.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\InputField.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\UserKindSelector.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\Notification.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\Card.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\Login.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\Register.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\ConfirmEmail.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\ForgotPassword.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\RegisterConfirmation.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\ForgotPasswordConfirmation.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\ResetPassword.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\ResetPasswordConfirmation.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\MainLayout.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\Header.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\Footer.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\Home.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    },
+    {
+      "Path": "..\\Styles\\AlumnoHome.razor.css",
+      "IsDefault": false,
+      "ApplicableLocations": []
+    }
+  ],
+  "BuildFiles": [
+    {
+      "Input": "..\\Styles\\app.css",
+      "Output": "wwwroot\\turnos.css"
+    },
+    {
+      "Input": "..\\Styles\\Checkbox.razor.css",
+      "Output": "..\\Turnos.Client\\Components\\Checkbox.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\InputField.razor.css",
+      "Output": "..\\Turnos.Client\\Components\\InputField.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\UserKindSelector.razor.css",
+      "Output": "..\\Turnos.Client\\Components\\UserKindSelector.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\Notification.razor.css",
+      "Output": "..\\Turnos.Client\\Components\\Notification.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\Card.razor.css",
+      "Output": "..\\Turnos.Client\\Components\\Card.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\Login.razor.css",
+      "Output": "Components\\Auth\\Login.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\Register.razor.css",
+      "Output": "Components\\Auth\\Register.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\ConfirmEmail.razor.css",
+      "Output": "Components\\Auth\\ConfirmEmail.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\ForgotPassword.razor.css",
+      "Output": "Components\\Auth\\ForgotPassword.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\RegisterConfirmation.razor.css",
+      "Output": "Components\\Auth\\RegisterConfirmation.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\ForgotPasswordConfirmation.razor.css",
+      "Output": "Components\\Auth\\ForgotPasswordConfirmation.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\ResetPassword.razor.css",
+      "Output": "Components\\Auth\\ResetPassword.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\ResetPasswordConfirmation.razor.css",
+      "Output": "Components\\Auth\\ResetPasswordConfirmation.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\MainLayout.razor.css",
+      "Output": "Components\\Layout\\MainLayout.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\Header.razor.css",
+      "Output": "Components\\Layout\\Header.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\Footer.razor.css",
+      "Output": "Components\\Layout\\Footer.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\Home.razor.css",
+      "Output": "..\\Turnos.Client\\Pages\\Home.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\AlumnoHome.razor.css",
+      "Output": "..\\Turnos.Client\\Pages\\AlumnoHome.razor.css"
+    }
+  ],
+  "PackageConfigurationFile": null,
+  "CustomRegexes": {
+    "Razor": {
+      "Override": false,
+      "Values": []
+    },
+    "HTML": {
+      "Override": false,
+      "Values": []
+    },
+    "JavaScript": {
+      "Override": false,
+      "Values": []
+    }
+  },
+  "UseCli": true
+}

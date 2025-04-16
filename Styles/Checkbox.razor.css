@@ -1,0 +1,58 @@
+@reference "./app.css";
+
+div ::deep input[type="checkbox"] {
+    @apply invisible hidden;
+}
+
+div ::deep label {
+    @apply m-auto cursor-pointer select-none;
+}
+
+    div ::deep label span {
+        @apply inline-block align-middle;
+        transform: translate3d(0, 0, 0);
+    }
+
+        div ::deep label span:first-child {
+            @apply relative size-4.5 rounded border border-solid border-[#9098a9] align-middle;
+            transform: scale(1);
+            transition: all 0.2s ease;
+        }
+
+            div ::deep label span:first-child svg {
+                @apply absolute top-1 left-0.5 fill-none stroke-white stroke-2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-dasharray: 16px;
+                stroke-dashoffset: 16px;
+                transition: all 0.3s ease;
+                transition-delay: 0.1s;
+                transform: translate3d(0, 0, 0);
+            }
+
+            div ::deep label span:first-child:before {
+                @apply bg-tecnm-500 block size-full rounded-full opacity-100 content-[""];
+                transform: scale(0);
+            }
+
+        div ::deep label span:last-child {
+            @apply pl-2;
+        }
+
+    div ::deep label:hover span:first-child {
+        @apply border-tecnm-500;
+    }
+
+div ::deep input:checked + label span:first-child {
+    @apply animate-wave border-tecnm-500 bg-tecnm-500;
+}
+
+    div ::deep input:checked + label span:first-child svg {
+        stroke-dashoffset: 0;
+    }
+
+    div ::deep input:checked + label span:first-child:before {
+        @apply opacity-0 transition-all duration-600 ease-in-out;
+        transform: scale(3.5);
+        /*transition: all 0.6s ease;*/
+    }

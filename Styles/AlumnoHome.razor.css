@@ -1,0 +1,13 @@
+﻿@reference "./app.css";
+
+.filas-container {
+    @apply flex justify-center py-10;
+}
+
+::deep .filas {
+    @apply max-h-[480px] min-h-[480px] w-72;
+}
+
+::deep .title {
+    @apply text-center text-xl font-extrabold text-black;
+}

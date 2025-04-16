@@ -1,0 +1,22 @@
+services:
+  turnos.webapp:
+    container_name: turnos.webapp
+    image: ${DOCKER_REGISTRY-}turnos
+    build:
+      context: .
+      dockerfile: Turnos/Dockerfile
+    depends_on:
+      - turnos.database
+
+  turnos.database:
+    image: postgres
+    container_name: turnos.database
+    ports:
+        - 5432:5432
+    environment:
+        - POSTGRES_USER=webapp
+        - POSTGRES_PASSWORD=hXwG6VQenveKEZxa6
+        - POSTGRES_DB=turnos
+    volumes:
+        - ./procedure-db:/var/lib/postgresql/data
+    

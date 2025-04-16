@@ -1,0 +1,22 @@
+﻿@page "/"
+@rendermode InteractiveAuto
+@attribute [Authorize]
+
+<section>
+
+    <AuthorizeView Policy="@Policies.IsAlumno">
+
+        <Authorized>
+            <AlumnoHome User="@context.User" />
+        </Authorized>
+
+        <NotAuthorized Context="_">
+            <AuthorizeView Policy="@Policies.IsPersonal">
+                <PersonalHome User="@context.User" />
+            </AuthorizeView>
+        </NotAuthorized>
+
+    </AuthorizeView>
+
+
+</section>

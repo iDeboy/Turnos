@@ -1,0 +1,9 @@
+﻿@reference "./app.css";
+
+section {
+    @apply flex flex-col gap-5 rounded-3xl bg-white p-5;
+}
+
+div {
+    @apply h-fit w-full;
+}

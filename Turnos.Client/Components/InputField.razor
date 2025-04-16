@@ -1,0 +1,30 @@
+﻿<section>
+
+    <div>
+
+        <InputText id=@Id type=@InputType.ToDescriptionString()
+                   required=@Required
+                   autocomplete=@Autocomplete
+                   ValueExpression=ValueExpression />
+
+        @if (!string.IsNullOrEmpty(Label)) {
+            @if (Required) {
+                <label for=@Id>
+                    @Label *
+                </label>
+            }
+            else {
+                <label for=@Id>
+                    @Label
+                </label>
+            }
+        }
+
+
+    </div>
+
+    @if (Validate) {
+        <ValidationMessage For="ValueExpression" class="text-danger" />
+    }
+
+</section>

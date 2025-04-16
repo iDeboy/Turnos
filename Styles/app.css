@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@source "../Turnos";
+@source "../Turnos.Client";
+
+@theme {
+    --color-tecnm-100: #d4dfeb;
+    --color-tecnm-200: #aabfd6;
+    --color-tecnm-300: #7fa0c2;
+    --color-tecnm-400: #5580ad;
+    --color-tecnm-500: #2a6099;
+    --color-tecnm-600: #224d7a;
+    --color-tecnm-700: #193a5c;
+    --color-tecnm-800: #11263d;
+    --color-tecnm-900: #08131f;
+    --color-danger: #dc3545;
+    --background-image-tecnm-image: url('img/bg-tecnm.jpg');
+    --animate-wave: wave 0.4s ease;
+
+    @keyframes wave {
+        50% {
+            transform: scale(0.9);
+        }
+    }
+}
+
+body {
+    @apply overflow-hidden;
+}
+
+* {
+    scrollbar-width: thin;
+}
+
+    *:focus {
+        @apply outline-none;
+    }
+
+.submit-button {
+    @apply bg-tecnm-600 text-base font-bold text-white normal-case select-none hover:bg-tecnm-500 active:bg-tecnm-700 disabled:bg-tecnm-400;
+}
+    
+.nav-link {
+    @apply text-tecnm-500 cursor-pointer font-bold select-none;
+}

@@ -1,0 +1,21 @@
+﻿<section class="@Class">
+
+    @if (TitleTemplate is not null) {
+        <div class="@TitleClass">
+            @TitleTemplate
+        </div>
+    }
+
+    @if (ContentTemplate is not null) {
+        <div class="@ContentClass">
+            @ContentTemplate
+        </div>
+    }
+
+    @if (ActionTemplate is not null) {
+        <div class="@ActionClass">
+            @ActionTemplate
+        </div>
+    }
+
+</section>

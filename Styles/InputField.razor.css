@@ -1,0 +1,38 @@
+@reference "./app.css";
+
+section {
+    @apply flex flex-col gap-0.5;
+}
+
+div {
+    @apply relative w-full;
+}
+
+    div ::deep label {
+        @apply bg-transparent pointer-events-none absolute left-3.5 translate-y-2.5 text-[#8d8d8d] select-none;
+        transition: all 0.3s ease;
+    }
+
+    div ::deep input {
+        @apply w-full rounded-lg border border-solid border-[#8d8d8d] p-[10px_15px] text-base tracking-wide focus:outline-none focus:border focus:border-solid focus:border-tecnm-500;
+    }
+
+        div ::deep input.valid {
+            @apply border-tecnm-500 border border-solid outline-none;
+        }
+
+        div ::deep input:focus ~ label {
+            @apply text-tecnm-500 -translate-x-2.5 -translate-y-[51%] scale-90 rounded-[100px] border-none bg-white p-[0px_5px] font-bold tracking-wide has-[.invalid]:text-danger;
+        }
+
+        div ::deep input:valid ~ label {
+            @apply text-tecnm-500 -translate-x-2.5 -translate-y-[51%] scale-90 rounded-[100px] border-none bg-white p-[0px_5px] font-bold tracking-wide;
+        }
+
+        div ::deep input.invalid {
+            @apply border-danger border border-solid outline-none;
+        }
+
+            div ::deep input.invalid ~ label {
+                @apply text-danger -translate-x-2.5 -translate-y-[51%] scale-90 rounded-[100px] border-none bg-white p-[0px_5px] font-bold tracking-wide;
+            }

@@ -1,0 +1,52 @@
+﻿@page "/Login"
+
+@inject SignInManager<User> SignInManager
+@inject ILogger<Login> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+<Notification Label="@_errorMessage" NotificationType="NotificationType.Error" />
+
+<section>
+
+    <Card Class="min-w-[328px]" TitleClass="title" ActionClass="text-center">
+        <TitleTemplate>
+            Iniciar sesión
+        </TitleTemplate>
+
+        <ContentTemplate>
+            <EditForm class="login-form"
+                      Model="Model" FormName="login"
+                      OnValidSubmit="LoginUser">
+
+                <DataAnnotationsValidator />
+
+                <InputField @bind-Value=@Model.Email
+                            InputType="InputType.Text"
+                            Label="Correo" Required Validate />
+
+                <InputField @bind-Value=@Model.Password
+                            InputType="InputType.Password"
+                            Label="Contraseña" Required Validate />
+
+                <div class="mb-5 flex justify-between">
+                    <Checkbox @bind-Value=@Model.RememberMe Label="Recordarme" />
+
+                    <NavLink class="nav-link" href=@Paths.ForgotPassword>¿Contraseña olvidada?</NavLink>
+                </div>
+
+                <MudButton Class="submit-button"
+                           ButtonType="ButtonType.Submit"
+                           Variant="Variant.Filled">
+                    Iniciar sesión
+                </MudButton>
+
+            </EditForm>
+        </ContentTemplate>
+
+        <ActionTemplate>
+            ¿No tienes una cuenta? <NavLink class="nav-link" href="@NavigationManager.GetUriWithQueryParameters(Paths.Register, new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl })">Registrate</NavLink>
+        </ActionTemplate>
+    </Card>
+
+</section>

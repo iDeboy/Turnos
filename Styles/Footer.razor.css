@@ -1,0 +1,14 @@
+﻿@reference "./app.css";
+
+div {
+    @apply bg-tecnm-500 sticky flex items-center justify-center px-5 text-xl text-white;
+    grid-area: footer;
+}
+
+form {
+    @apply absolute right-5 overflow-hidden;
+}
+
+::deep .logout-button {
+    @apply bg-red-500 text-base font-bold text-white normal-case select-none hover:bg-red-400 active:bg-red-600 disabled:bg-red-300;
+}

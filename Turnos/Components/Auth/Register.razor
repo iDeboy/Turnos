@@ -1,0 +1,65 @@
+﻿@page "/Register"
+
+@inject UserManager<User> UserManager
+@inject IUserStore<User> UserStore
+@inject SignInManager<User> SignInManager
+@inject IEmailSender<User> EmailSender
+@inject ILogger<Register> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+<Notification Label="@_errorMessage" NotificationType="NotificationType.Error" />
+
+<section class="register">
+
+    <Card Class="min-w-[328px]" TitleClass="title" ActionClass="text-center">
+
+        <TitleTemplate>
+            Crea una cuenta
+        </TitleTemplate>
+
+        <ContentTemplate>
+            <EditForm class="register-form" Model="Model"
+                      asp-route-returnUrl="@ReturnUrl"
+                      OnValidSubmit="RegisterUser"
+                      FormName="register">
+
+                <DataAnnotationsValidator />
+
+                <UserKindSelector @bind-Value=Model.Kind />
+
+                <InputField @bind-Value=@Model.Name
+                            InputType="InputType.Text"
+                            Label="Nombre completo" Required Validate />
+
+                <InputField @bind-Value=@Model.Email
+                            InputType="InputType.Text"
+                            Label="Correo" Required Validate />
+
+                <InputField @bind-Value=@Model.Password
+                            InputType="InputType.Password"
+                            Label="Contraseña" Required Validate />
+
+                <InputField @bind-Value=@Model.ConfirmPassword
+                            InputType="InputType.Password"
+                            Label="Confirmar contraseña" Required Validate />
+
+                <MudButton Class="submit-button"
+                           ButtonType="ButtonType.Submit"
+                           Variant="Variant.Filled">
+                    Registrarse
+                </MudButton>
+
+            </EditForm>
+        </ContentTemplate>
+
+        <ActionTemplate>
+            ¿Ya tienes una cuenta?
+            <NavLink class="nav-link" href="@(NavigationManager.GetUriWithQueryParameters(Paths.Login, new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">
+                Inicia sesión
+            </NavLink>
+        </ActionTemplate>
+
+    </Card>
+
+</section>

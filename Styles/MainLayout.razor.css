@@ -1,0 +1,14 @@
+@reference "./app.css";
+
+section {
+    @apply grid h-dvh grid-rows-[100px_1fr_50px];
+    grid-template-areas:
+        "header"
+        "content"
+        "footer";
+}
+
+main {
+    @apply bg-tecnm-image h-full w-full overflow-auto bg-cover bg-center bg-no-repeat;
+    grid-area: content;
+}

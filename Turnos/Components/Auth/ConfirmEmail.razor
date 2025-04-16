@@ -1,0 +1,17 @@
+﻿@page "/ConfirmEmail"
+
+@inject UserManager<User> UserManager
+@inject IdentityRedirectManager RedirectManager
+
+@* TODO: En caso de exito poner un boton para ir al login, sino ir al registro*@
+<section>
+    <Card TitleClass="title" ContentClass="@_statusClass">
+        <TitleTemplate>
+            Confirmación de correo
+        </TitleTemplate>
+        <ContentTemplate>
+            @_statusMessage
+        </ContentTemplate>
+    </Card>
+</section>
+

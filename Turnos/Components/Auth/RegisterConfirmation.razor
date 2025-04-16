@@ -1,0 +1,18 @@
+﻿@page "/RegisterConfirmation"
+
+@inject UserManager<User> UserManager
+@inject IEmailSender<User> EmailSender
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+@* TODO: boton para reenviar el coreo *@
+<section>
+    <Card TitleClass="title" ContentClass="@_statusClass">
+        <TitleTemplate>
+            Confirmación de registro
+        </TitleTemplate>
+        <ContentTemplate>
+            @_statusMessage
+        </ContentTemplate>
+    </Card>
+</section>
