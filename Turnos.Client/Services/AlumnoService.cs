@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using System.Collections.Concurrent;
 using Turnos.Common;
 using Turnos.Common.Abstractions;
 
@@ -16,6 +17,10 @@ internal sealed class AlumnoService : IAlumnoService {
             .Build();
     }
 
+    public Task StartAsync() {
+        return _connection.StartAsync();
+    }
+
     public Task<IReadOnlyDictionary<Guid, FilaInfo>> LoadFilasAsync(CancellationToken cancellationToken = default) {
         return Task.FromResult<IReadOnlyDictionary<Guid, FilaInfo>>(new Dictionary<Guid, FilaInfo>());
     }
@@ -23,4 +28,6 @@ internal sealed class AlumnoService : IAlumnoService {
     public ValueTask DisposeAsync() {
         return _connection.DisposeAsync();
     }
+
+    
 }

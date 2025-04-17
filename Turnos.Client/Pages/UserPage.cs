@@ -2,7 +2,7 @@
 using System.Security.Claims;
 
 namespace Turnos.Client.Pages; 
-public abstract class UserPage : ComponentBase {
+public abstract class UserPage : CancellablePage {
 
     [Parameter]
     [EditorRequired]

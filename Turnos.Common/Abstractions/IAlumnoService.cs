@@ -9,6 +9,8 @@ public interface IAlumnoService : IAsyncDisposable {
 
     event Action<IReadOnlyDictionary<Guid, FilaInfo>>? FilasUpdated;
 
+    Task StartAsync();
+
     Task<IReadOnlyDictionary<Guid, FilaInfo>> LoadFilasAsync(CancellationToken cancellationToken = default);
 
 }

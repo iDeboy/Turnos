@@ -7,9 +7,10 @@ public interface IStoreService<TKey, TItem> where TKey : notnull {
 
     bool IsLoaded { get; }
 
-    Lock<IStoreService<TKey, TItem>> AdquireLock();
+    ValueTask<Lock<IStoreService<TKey, TItem>>> LockAsync(CancellationToken cancellationToken = default);
 
     void MarkLoaded();
+    
     void AddItem(TKey key, TItem value);
     void RemoveItem(TKey key);
 

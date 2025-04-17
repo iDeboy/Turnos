@@ -23,8 +23,12 @@ internal sealed class StoreService<TKey, TItem> : IStoreService<TKey, TItem> whe
         _items.TryAdd(key, value);
     }
 
-    public Lock<IStoreService<TKey, TItem>> AdquireLock()
-        => new(this, _semaphore);
+    public async ValueTask<Lock<IStoreService<TKey, TItem>>> LockAsync(CancellationToken cancellationToken = default) {
+        
+        await _semaphore.WaitAsync(cancellationToken);
+
+        return new(this, _semaphore);
+    }
 
     public void MarkLoaded() => _isLoaded = true;
 

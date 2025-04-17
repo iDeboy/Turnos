@@ -10,33 +10,33 @@ namespace Turnos.Services;
 internal sealed class AlumnoService : IAlumnoService {
 
     private readonly IStoreService<Guid, FilaInfo> _store;
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly TurnosDbContext _db;
 
     public event Action<IReadOnlyDictionary<Guid, FilaInfo>>? FilasUpdated;
 
-    public AlumnoService(IStoreService<Guid, FilaInfo> store, IServiceScopeFactory scopeFactory) {
+    public AlumnoService(IStoreService<Guid, FilaInfo> store, TurnosDbContext db) {
         _store = store;
-        _scopeFactory = scopeFactory;
+        _db = db;
+    }
+
+    public Task StartAsync() {
+        return Task.CompletedTask;
     }
 
     public async Task<IReadOnlyDictionary<Guid, FilaInfo>> LoadFilasAsync(CancellationToken cancellationToken = default) {
-        
-        using var @lock = _store.AdquireLock();
+
+        using var @lock = await _store.LockAsync(cancellationToken);
 
         var store = @lock.Value;
 
         if (store.IsLoaded) return store.Items;
 
-        using var scope = _scopeFactory.CreateScope();
-
-        var db = scope.ServiceProvider.GetRequiredService<TurnosDbContext>();
-
-        var query = db.Filas
+        var query = _db.Filas
             .AsNoTrackingWithIdentityResolution()
             .Include(f => f.Personal)
-            .Select(fila => new {
+            .Select(fila => new IdValuePair<Guid, FilaInfo>() {
                 Id = fila.Id,
-                Info = new FilaInfo {
+                Value = new FilaInfo {
                     Name = fila.Name,
                     CreatedAt = fila.CreatedAtUtc,
                     HasPassword = fila.PasswordHash == null,
@@ -50,9 +50,9 @@ internal sealed class AlumnoService : IAlumnoService {
             .AsAsyncEnumerable()
             .WithCancellation(cancellationToken)
             .ConfigureAwait(false);
-        
+
         await foreach (var entry in query) {
-            store.AddItem(entry.Id, entry.Info);
+            store.AddItem(entry.Id, entry.Value);
         }
 
         store.MarkLoaded();
@@ -63,4 +63,5 @@ internal sealed class AlumnoService : IAlumnoService {
     public ValueTask DisposeAsync() {
         return ValueTask.CompletedTask;
     }
+
 }
