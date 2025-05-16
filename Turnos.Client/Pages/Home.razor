@@ -3,19 +3,13 @@
 @attribute [Authorize]
 
 <section>
-
+    
     <AuthorizeView Policy="@Policies.IsAlumno">
+        <AlumnoHome User="@context.User" />
+    </AuthorizeView>
 
-        <Authorized>
-            <AlumnoHome User="@context.User" />
-        </Authorized>
-
-        <NotAuthorized Context="_">
-            <AuthorizeView Policy="@Policies.IsPersonal">
-                <PersonalHome User="@context.User" />
-            </AuthorizeView>
-        </NotAuthorized>
-
+    <AuthorizeView Policy="@Policies.IsPersonal">
+        <PersonalHome User="@context.User" />
     </AuthorizeView>
 
 

@@ -1,6 +1,6 @@
-﻿using Turnos.Common.Abstractions;
+﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Turnos.Services;
+namespace Turnos.Common.Abstractions;
 public interface IStoreService<TKey, TItem> where TKey : notnull {
 
     IReadOnlyDictionary<TKey, TItem> Items { get; }
@@ -11,8 +11,10 @@ public interface IStoreService<TKey, TItem> where TKey : notnull {
 
     void MarkLoaded();
     
+    bool TryGetItem(TKey key, [MaybeNullWhen(false)] out TItem item);
     void AddItem(TKey key, TItem value);
-    void RemoveItem(TKey key);
+    void ChangeItem(TKey key, TItem newValue);
+    void DeleteItem(TKey key);
 
 
 }

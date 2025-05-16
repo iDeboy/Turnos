@@ -1,4 +1,226 @@
-﻿@inherits UserPage
+﻿@inherits UserComponent
 @rendermode InteractiveAuto
 
-<h3>Personal</h3>
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject IPersonalService PersonalService
+
+<section class="container">
+	<Card Class="filas" TitleClass="title" ContentClass="!h-full !overflow-auto">
+
+		<TitleTemplate>
+			Tus filas
+		</TitleTemplate>
+
+		<ContentTemplate>
+
+			@if (_filas is null) {
+				<span class="inline-block w-full text-center select-none">
+					Cargando...
+				</span>
+			}
+			else {
+				<MudList T="Guid"
+						 @bind-SelectedValue=SelectedInfoId
+						 SelectionMode="SelectionMode.ToggleSelection"
+						 Gutters="false">
+
+					@foreach (var (id, fila) in _filas.OrderBy(kvp => kvp.Key)) {
+						<MudListItem @key=id Value="id" Class="item-fila">
+							<section class="fila-layout @fila.Estado">
+								<span>
+									@fila.Name
+								</span>
+								<div>
+									@if (fila.HasPassword) {
+										<LockedIcon Class="size-5 text-yellow-500" />
+									}
+									else {
+										<UnlockedIcon Class="size-5 text-yellow-500" />
+									}
+
+									<MudIconButton Size="Size.Small"
+												   Edge="Edge.False"
+												   OnClick="() => DeleteFila(id)">
+										<DeleteIcon Class="size-5 text-red-500" />
+									</MudIconButton>
+								</div>
+							</section>
+						</MudListItem>
+					}
+
+				</MudList>
+			}
+
+		</ContentTemplate>
+
+		<ActionTemplate>
+			<MudButton Class="submit-button w-full"
+					   OnClick="CreateFila">
+				Crear fila
+			</MudButton>
+		</ActionTemplate>
+
+	</Card>
+</section>
+
+@if (SelectedInfo is null) return;
+
+<section class="container">
+
+	<Card TitleClass="title" ContentClass="detalle">
+		<TitleTemplate>
+			Detalles de la fila
+		</TitleTemplate>
+
+		<ContentTemplate>
+			<span>
+				<label class="font-semibold">Nombre:</label>
+				<label>
+					@SelectedInfo.Name
+				</label>
+			</span>
+
+			<span>
+				<label class="font-semibold">Fecha de creación:</label>
+				<label>
+					@SelectedInfo.CreatedAt.ToDefaultTimeZone().ToString("dd/MM/yyyy hh:mm:ss tt")
+				</label>
+			</span>
+
+			<span>
+				<label class="font-semibold">Tiempo de atención promedio:</label>
+				<label>
+					@if (@SelectedInfo.EstimatedAttentionTime != TimeSpan.Zero) {
+						@SelectedInfo.EstimatedAttentionTime.ToString(@"mm\:ss") @:minutos
+					}
+					else {
+						@:Inmediatamente
+					}
+				</label>
+			</span>
+
+			<span>
+				<label class="font-semibold">Estado:</label>
+				<label class="@SelectedInfo.Estado">
+					@SelectedInfo.Estado
+				</label>
+			</span>
+
+			<Card Class="password-card" TitleClass="title">
+
+				<TitleTemplate>
+					@if (SelectedInfo.HasPassword) {
+						@:Cambiar contraseña
+					}
+					else {
+						@:Proteger fila
+					}
+				</TitleTemplate>
+
+				<ContentTemplate>
+
+					@if (SelectedInfo.HasPassword) {
+
+						<MudTextField @bind-Value=@_password
+									  Label="Contraseña actual"
+									  Variant="Variant.Outlined" Margin="Margin.Dense" Immediate />
+
+						<MudTextField @bind-Value=@_newPassword
+									  Label="Nueva contraseña"
+									  Variant="Variant.Outlined" Margin="Margin.Dense" Immediate />
+					}
+					else {
+						<MudTextField @bind-Value=@_newPassword
+									  Label="Contraseña"
+									  Variant="Variant.Outlined" Margin="Margin.Dense" Immediate />
+					}
+				</ContentTemplate>
+
+				<ActionTemplate>
+					<MudButton Class="submit-button w-full"
+							   Disabled=!CanApplyPassword()
+							   OnClick="() => ApplyPassword()">
+						@GetPasswordButtonText()
+					</MudButton>
+				</ActionTemplate>
+			</Card>
+		</ContentTemplate>
+
+		<ActionTemplate>
+			<MudButton Class="submit-button w-full"
+					   OnClick="() => CambiarEstadoFila()">
+
+				@switch (SelectedInfo.Estado) {
+					case EstadoFila.Abierta:
+						@:Cerrar fila
+						break;
+					case EstadoFila.Cerrada:
+						@:Abrir fila
+						break;
+					default:
+						@:Esto es un bug, favor de reportar
+						break;
+				}
+
+			</MudButton>
+		</ActionTemplate>
+	</Card>
+
+</section>
+
+@if (SelectedTurnos is null) return;
+
+<section class="container">
+
+	<Card Class="turnos" TitleClass="title" ContentClass="!h-full !overflow-auto" ActionClass="flex flex-col gap-2">
+		<TitleTemplate>
+			Turnos
+		</TitleTemplate>
+		<ContentTemplate>
+
+			<MudList T="uint"
+					 ReadOnly
+					 Gutters="false">
+				@foreach (var (lugar, turno) in SelectedTurnos) {
+					<MudDivider />
+					<MudListItem @key=lugar Value="lugar" Class="item-turno">
+						<section class="turno-layout">
+							<span class="turno">
+								Turno @turno.Lugar: @turno.Alumno.Name
+							</span>
+							<span class="estado @turno.Estado">
+								@turno.Estado
+							</span>
+						</section>
+					</MudListItem>
+					<MudDivider />
+				}
+			</MudList>
+		</ContentTemplate>
+		<ActionTemplate>
+
+			@if (NearestTurno is not null) {
+				<MudButton Class="submit-button w-full"
+						   Disabled=!CanAttendEndTurno()
+						   OnClick="AttendEndTurno">
+					@if (NearestTurno.Estado == EstadoTurno.Atendiendo) {
+						@:Finalizar turno
+					}
+					else {
+						@:Atender siguiente turno
+					}
+				</MudButton>
+
+				@if (NearestTurno.Estado != EstadoTurno.Atendiendo) {
+					<MudButton Class="cancel-button w-full"
+							   Disabled=!CanCancelNextTurno()
+							   OnClick="CancelNextTurno">
+						Cancelar siguiente turno
+					</MudButton>
+				}
+			}
+		</ActionTemplate>
+	</Card>
+
+</section>

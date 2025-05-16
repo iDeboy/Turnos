@@ -27,6 +27,13 @@ RUN dotnet publish "./Turnos.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:
 
 # Esta fase se usa en producción o cuando se ejecuta desde VS en modo normal (valor predeterminado cuando no se usa la configuración de depuración)
 FROM base AS final
+
+USER root
+RUN apt-get update && apt-get install -y tzdata
+ENV TZ=America/Mexico_City
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+USER $APP_UID
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Turnos.dll"]

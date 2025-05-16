@@ -1,5 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
+@* Required *@
+<MudThemeProvider @rendermode=RenderModes.InteractiveAuto />
+<MudPopoverProvider @rendermode=RenderModes.InteractiveAuto />
+
+@* Needed for dialogs *@
+<MudDialogProvider @rendermode=RenderModes.InteractiveAuto />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider @rendermode=RenderModes.InteractiveAuto />
+
 <section>
 
     <Header Title="Sistema Gestor de Turnos" />

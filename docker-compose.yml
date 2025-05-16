@@ -1,10 +1,12 @@
 services:
   turnos.webapp:
     container_name: turnos.webapp
-    image: ${DOCKER_REGISTRY-}turnos
+    image: ${DOCKER_REGISTRY-}turnos:latest
     build:
       context: .
       dockerfile: Turnos/Dockerfile
+    environment:
+      - TZ=America/Mexico_City
     depends_on:
       - turnos.database
 

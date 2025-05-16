@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Security.Claims;
 
-namespace Turnos.Client.Pages; 
-public abstract class UserPage : CancellablePage {
+namespace Turnos.Client.Abstractions; 
+public abstract class UserComponent : CancellableComponent {
 
     [Parameter]
     [EditorRequired]

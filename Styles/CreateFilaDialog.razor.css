@@ -1,0 +1,9 @@
+@reference "./app.css";
+
+label {
+    @apply text-lg font-bold select-none;
+}
+
+::deep .password-card {
+    @apply bg-transparent border border-zinc-200;
+}

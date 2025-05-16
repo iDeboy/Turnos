@@ -2,99 +2,67 @@
   "$schema": "https://raw.githubusercontent.com/theron-wang/VS2022-Editor-Support-for-Tailwind-CSS/refs/heads/main/tailwind.extension.schema.json",
   "ConfigurationFiles": [
     {
-      "Path": "..\\Styles\\app.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\app.css"
     },
     {
-      "Path": "..\\Styles\\Checkbox.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\checkbox.razor.css"
     },
     {
-      "Path": "..\\Styles\\InputField.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\inputfield.razor.css"
     },
     {
-      "Path": "..\\Styles\\UserKindSelector.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\userkindselector.razor.css"
     },
     {
-      "Path": "..\\Styles\\Notification.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\notification.razor.css"
     },
     {
-      "Path": "..\\Styles\\Card.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\card.razor.css"
     },
     {
-      "Path": "..\\Styles\\Login.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\login.razor.css"
     },
     {
-      "Path": "..\\Styles\\Register.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\register.razor.css"
     },
     {
-      "Path": "..\\Styles\\ConfirmEmail.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\confirmemail.razor.css"
     },
     {
-      "Path": "..\\Styles\\ForgotPassword.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\forgotpassword.razor.css"
     },
     {
-      "Path": "..\\Styles\\RegisterConfirmation.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\registerconfirmation.razor.css"
     },
     {
-      "Path": "..\\Styles\\ForgotPasswordConfirmation.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\forgotpasswordconfirmation.razor.css"
     },
     {
-      "Path": "..\\Styles\\ResetPassword.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\resetpassword.razor.css"
     },
     {
-      "Path": "..\\Styles\\ResetPasswordConfirmation.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\resetpasswordconfirmation.razor.css"
     },
     {
-      "Path": "..\\Styles\\MainLayout.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\mainlayout.razor.css"
     },
     {
-      "Path": "..\\Styles\\Header.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\header.razor.css"
     },
     {
-      "Path": "..\\Styles\\Footer.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\footer.razor.css"
     },
     {
-      "Path": "..\\Styles\\Home.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\home.razor.css"
     },
     {
-      "Path": "..\\Styles\\AlumnoHome.razor.css",
-      "IsDefault": false,
-      "ApplicableLocations": []
+      "Path": "..\\styles\\alumnohome.razor.css"
+    },
+    {
+      "Path": "..\\styles\\personalhome.razor.css"
+    },
+    {
+      "Path": "..\\styles\\createfiladialog.razor.css"
     }
   ],
   "BuildFiles": [
@@ -173,6 +141,14 @@
     {
       "Input": "..\\Styles\\AlumnoHome.razor.css",
       "Output": "..\\Turnos.Client\\Pages\\AlumnoHome.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\PersonalHome.razor.css",
+      "Output": "..\\Turnos.Client\\Pages\\PersonalHome.razor.css"
+    },
+    {
+      "Input": "..\\Styles\\CreateFilaDialog.razor.css",
+      "Output": "..\\Turnos.Client\\Components\\Dialogs\\CreateFilaDialog.razor.css"
     }
   ],
   "PackageConfigurationFile": null,

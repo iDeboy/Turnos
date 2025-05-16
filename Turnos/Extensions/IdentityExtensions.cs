@@ -37,6 +37,7 @@ internal static class IdentityExtensions {
         services.AddAuthorizationCore(options => {
             options.AddPolicy(Policies.IsAlumno, Policies.AlumnoPolicy);
             options.AddPolicy(Policies.IsPersonal, Policies.PersonalPolicy);
+            options.AddPolicy(Policies.IsClient, Policies.ClientPolicy);
         });
 
         services.AddAuthentication(options => {

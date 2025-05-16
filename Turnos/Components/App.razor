@@ -6,29 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
     <title>Gestor de turnos</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="_content/MudBlazor/MudBlazor.min.css" />
     <link rel="stylesheet" href="turnos.css" />
     <link rel="stylesheet" href="Turnos.styles.css" />
 
     <HeadOutlet />
 
+    <script src="js/turnos.js" defer></script>
     <script src="_content/MudBlazor/MudBlazor.min.js" defer></script>
     <script src="_framework/blazor.web.js" defer></script>
 </head>
 
 <body>
-
-    @* Required *@
-    <MudThemeProvider />
-    <MudPopoverProvider />
-
-    @* Needed for dialogs *@
-    <MudDialogProvider />
-
-    @* Needed for snackbars *@
-    <MudSnackbarProvider />
-
     <Routes />
 </body>
 

@@ -1,4 +1,4 @@
-﻿namespace Turnos.Client.Utils; 
+﻿namespace Turnos.Client.Abstractions; 
 public enum NotificationType {
     Success,
     Info,

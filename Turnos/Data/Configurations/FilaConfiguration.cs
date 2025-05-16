@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Turnos.Common;
 using Turnos.Data.Auth;
 
-namespace Turnos.Data.Configurations; 
+namespace Turnos.Data.Configurations;
 public sealed class FilaConfiguration : TrackingEntityConfiguration<Fila> {
     public override void Configure(EntityTypeBuilder<Fila> builder) {
 
@@ -29,6 +29,9 @@ public sealed class FilaConfiguration : TrackingEntityConfiguration<Fila> {
         builder.HasMany(f => f.Turnos)
             .WithOne(t => t.Fila)
             .HasForeignKey(t => t.FilaId);
+
+        builder.Property(f => f.EstimatedAttentionTime)
+            .IsRequired();
 
     }
 }

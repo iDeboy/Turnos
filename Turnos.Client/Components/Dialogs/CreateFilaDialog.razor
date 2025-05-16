@@ -1,0 +1,40 @@
+﻿@inherits UserComponent
+
+@inject IPersonalService PersonalService
+
+<MudDialog>
+    <TitleContent>
+        <label>Crear fila</label>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField T="string"
+                      @bind-Value="_name"
+                      Label="Nombre"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Required
+                      Immediate />
+
+
+        <MudSelect T="EstadoFila"
+                   @bind-Value="_estado"
+                   Label="Estado"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Required>
+            <MudSelectItem Value="EstadoFila.Abierta">Abierta</MudSelectItem>
+            <MudSelectItem Value="EstadoFila.Cerrada">Cerrada</MudSelectItem>
+        </MudSelect>
+
+        <MudTextField @bind-Value=@_password
+                      Label="Contraseña"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Immediate />
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Class="submit-button" OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Class="submit-button" Disabled=!CanCreate() OnClick="Create">Crear</MudButton>
+    </DialogActions>
+</MudDialog>

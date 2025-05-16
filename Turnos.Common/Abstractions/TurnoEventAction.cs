@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Turnos.Common.Abstractions; 
-public sealed class PersonalInfo {
-
-    public required string Name { get; set; }
-
-    public required string Email { get; set; }
-
+public enum TurnoEventAction {
+    Create,
+    Cancel,
+    Attending,
+    Attended
 }

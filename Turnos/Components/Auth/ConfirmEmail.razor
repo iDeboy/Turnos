@@ -5,13 +5,18 @@
 
 @* TODO: En caso de exito poner un boton para ir al login, sino ir al registro*@
 <section>
-    <Card TitleClass="title" ContentClass="@_statusClass">
-        <TitleTemplate>
-            Confirmación de correo
-        </TitleTemplate>
-        <ContentTemplate>
-            @_statusMessage
-        </ContentTemplate>
-    </Card>
+	<Card TitleClass="title" ContentClass="@_statusClass">
+		<TitleTemplate>
+			Confirmación de correo
+		</TitleTemplate>
+		<ContentTemplate>
+			@_statusMessage
+			@if (_statusClass == "valid") {
+				@:Por favor, da 
+				<NavLink class="nav-link" href="@Paths.Login">click aqui</NavLink>
+				@:para iniciar sesión.
+			}
+		</ContentTemplate>
+	</Card>
 </section>
 

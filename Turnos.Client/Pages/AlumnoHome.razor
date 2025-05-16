@@ -1,26 +1,194 @@
-﻿@inherits UserPage
+﻿@inherits UserComponent
 @rendermode InteractiveAuto
 
+@inject ISnackbar Snackbar
 @inject IAlumnoService AlumnoService
 
-<section class="filas-container">
-    <Card Class="filas" TitleClass="title">
+<section class="container">
+	<Card Class="filas" TitleClass="title">
 
-        <TitleTemplate>
-            Filas disponibles
-        </TitleTemplate>
+		<TitleTemplate>
+			Filas
+		</TitleTemplate>
 
-        <ContentTemplate>  
-            
-        </ContentTemplate>
+		<ContentTemplate>
 
-    </Card>
+			@if (_filas is null) {
+				<label class="inline-block w-full text-center select-none">
+					Cargando...
+				</label>
+			}
+			else {
+				<MudList T="Guid"
+						 @bind-SelectedValue=SelectedFilaInfoId
+						 SelectionMode="SelectionMode.ToggleSelection"
+						 Gutters="false">
+
+					@foreach (var (id, fila) in _filas.OrderBy(kvp => kvp.Key)) {
+						<MudListItem @key=id Value="id">
+							<section class="fila-layout">
+								<div class="text">
+									<span class="text-sm">@fila.Name</span>
+									<span class="text-xs">Creado por: @fila.Author.Name</span>
+								</div>
+								<div class="icons">
+									@if (fila.HasPassword) {
+										<LockedIcon Class="size-5 text-yellow-500" />
+									}
+									else {
+										<UnlockedIcon Class="size-5 text-yellow-500" />
+									}
+								</div>
+							</section>
+						</MudListItem>
+					}
+
+				</MudList>
+			}
+
+		</ContentTemplate>
+
+	</Card>
 </section>
 
-<section>
+@if (SelectedFilaInfo is null) return;
 
+<section class="container">
+	<Card TitleClass="title" ContentClass="detalle">
+		<TitleTemplate>
+			Detalle de la fila
+		</TitleTemplate>
+		<ContentTemplate>
+
+			<span>
+				<label class="font-semibold">Nombre:</label>
+				<label>
+					@SelectedFilaInfo.Name
+				</label>
+			</span>
+
+			<span>
+				<label class="font-semibold">Creada por:</label>
+				<label>
+					@SelectedFilaInfo.Author.Name
+				</label>
+			</span>
+
+			<span>
+				<label class="font-semibold">Fecha de creación:</label>
+				<label>
+					@SelectedFilaInfo.CreatedAt.ToDefaultTimeZone().ToString("dd/MM/yyyy hh:mm:ss tt")
+				</label>
+			</span>
+
+			<span>
+				<label class="font-semibold">Tiempo de atención promedio:</label>
+				<label>
+					@if (SelectedFilaInfo.EstimatedAttentionTime != TimeSpan.Zero) {
+						@SelectedFilaInfo.EstimatedAttentionTime.ToString(@"mm\:ss") @:minutos
+					}
+					else {
+						@:Inmediatamente
+					}
+				</label>
+			</span>
+
+			<span>
+				<label class="font-semibold">Estado:</label>
+				<label class="@SelectedFilaInfo.Estado">
+					@SelectedFilaInfo.Estado
+				</label>
+			</span>
+
+			@if (SelectedFilaInfo.HasPassword) {
+				<MudTextField @bind-Value=@_password
+							  Label="Contraseña"
+							  Variant="Variant.Outlined" Margin="Margin.Dense" Immediate />
+			}
+
+		</ContentTemplate>
+		<ActionTemplate>
+			<MudButton Class="submit-button w-full"
+					   OnClick="JoinFila"
+					   Disabled=!CanJoinFila()>
+				Obtener turno
+			</MudButton>
+		</ActionTemplate>
+	</Card>
 </section>
 
-<section>
+<section class="turnos-area container">
+
+	<Card Class="mt-8 max-h-28 w-72" TitleClass="title" ContentClass="text-center">
+		<TitleTemplate>
+			Turno actual
+		</TitleTemplate>
+
+		<ContentTemplate>
+			@if (SelectedFilaInfo.CurrentPlace is not 0) {
+				@SelectedFilaInfo.CurrentPlace
+			}
+			else {
+				@:Sin turno
+			}
+		</ContentTemplate>
+	</Card>
+
+	@if (SelectedTurnoInfo is not null) {
+		<Card TitleClass="title" ContentClass="detalle">
+			<TitleTemplate>
+				Ticket
+			</TitleTemplate>
+
+			<ContentTemplate>
+
+				<span>
+					<label class="font-semibold">Turno:</label>
+					<label>
+						@SelectedTurnoInfo.Lugar
+					</label>
+				</span>
+
+				<span>
+					<label class="font-semibold">Obtenido el:</label>
+					<label>
+						@SelectedTurnoInfo.CreatedAt.ToDefaultTimeZone().ToString("dd/MM/yyyy hh:mm:ss tt")
+					</label>
+				</span>
+
+				@if (SelectedTurnoInfo.Estado is not EstadoTurno.Atendiendo) {
+					<span>
+						<label class="font-semibold">Tiempo aproximado de atención:</label>
+						<label>
+							@if (SelectedTurnoInfo.TiempoEstimado != TimeSpan.Zero) {
+								@SelectedTurnoInfo.TiempoEstimado.ToString(@"mm\:ss") @:minutos
+							}
+							else {
+								@:Inmediatamente
+							}
+						</label>
+					</span>
+				}
+
+				<span>
+					<label class="font-semibold">Estado:</label>
+					<label class="@SelectedTurnoInfo.Estado">
+						@SelectedTurnoInfo.Estado
+					</label>
+				</span>
+
+			</ContentTemplate>
+
+			<ActionTemplate>
+				<MudButton Class="cancel-button w-full"
+						   Variant="Variant.Filled"
+						   Disabled=!CanCancelTurno()
+						   OnClick="CancelTurno">
+					Cancelar turno
+				</MudButton>
+			</ActionTemplate>
+		</Card>
+	}
+
 
 </section>

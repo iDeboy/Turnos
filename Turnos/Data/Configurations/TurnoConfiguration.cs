@@ -28,5 +28,8 @@ public sealed class TurnoConfiguration : TrackingEntityConfiguration<Turno> {
         builder.Property(t => t.Estado)
             .IsRequired();
 
+        builder.Property(t => t.AttendedAt);
+        builder.Property(t => t.CompletedAt);
+
     }
 }

@@ -1,7 +1,11 @@
 ﻿@reference "./app.css";
 
-.filas-container {
-    @apply flex justify-center py-10;
+.container {
+    @apply flex flex-col items-center justify-center gap-5;
+}
+
+.turnos-area {
+    @apply h-full justify-normal;
 }
 
 ::deep .filas {
@@ -10,4 +14,68 @@
 
 ::deep .title {
     @apply text-center text-xl font-extrabold text-black;
+}
+
+::deep .mud-selected-item {
+    @apply !text-tecnm-500;
+    background-color: rgba(42, 96, 153, 0.058823529411764705) !important;
+}
+
+::deep .mud-selected-item {
+    @apply !text-tecnm-500;
+    background-color: rgba(42, 96, 153, 0.058823529411764705) !important;
+}
+
+::deep .fila-layout {
+    @apply grid items-center;
+    grid-template-columns: 1fr 2rem;
+}
+
+    ::deep .fila-layout .text {
+        @apply flex size-full flex-col justify-center;
+    }
+
+    ::deep .fila-layout span {
+        @apply overflow-hidden pl-2 font-medium tracking-tight text-nowrap text-ellipsis whitespace-nowrap;
+    }
+
+    ::deep .fila-layout .icons {
+        @apply flex size-full items-center;
+    }
+
+    ::deep .fila-layout.Abierta {
+        @apply border-l-4 border-l-green-400;
+    }
+
+    ::deep .fila-layout.Cerrada {
+        @apply border-l-4 border-l-red-400;
+    }
+
+label.Abierta {
+    @apply font-bold text-green-400;
+}
+
+label.Cerrada {
+    @apply font-bold text-red-400;
+}
+
+
+label.Pendiente {
+    @apply font-bold text-indigo-400;
+}
+
+label.Atendido {
+    @apply font-bold text-green-400;
+}
+
+label.Cancelado {
+    @apply font-bold text-red-400;
+}
+
+label.Atendiendo {
+    @apply font-bold text-purple-400;
+}
+
+::deep .detalle {
+    @apply flex h-full flex-col gap-3;
 }

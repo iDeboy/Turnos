@@ -15,6 +15,9 @@ public sealed class Turno : ITrackedEntity {
 
     public EstadoTurno Estado { get; set; } = EstadoTurno.Pendiente;
 
-    public DateTimeOffset CreatedAtUtc { get; set; }
-    public DateTimeOffset UpdatedAtUtc { get; set; }
+    public DateTimeOffset? AttendedAt { get; set; }
+    public DateTimeOffset? CompletedAt { get; set; }
+
+    public DateTimeOffset CreatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
 }

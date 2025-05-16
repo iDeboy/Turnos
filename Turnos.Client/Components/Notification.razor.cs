@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using Turnos.Client.Utils;
+using Turnos.Client.Abstractions;
 
 namespace Turnos.Client.Components;
 public partial class Notification {

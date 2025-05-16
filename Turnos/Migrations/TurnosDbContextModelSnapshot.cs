@@ -162,6 +162,9 @@ namespace Turnos.Migrations
                     b.Property<EstadoFila>("Estado")
                         .HasColumnType("turnos.estado_fila");
 
+                    b.Property<TimeSpan>("EstimatedAttentionTime")
+                        .HasColumnType("interval");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -221,6 +224,12 @@ namespace Turnos.Migrations
 
                     b.Property<long>("Lugar")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("AttendedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset>("CreatedAtUtc")
                         .ValueGeneratedOnAdd()

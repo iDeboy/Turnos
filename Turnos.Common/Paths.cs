@@ -12,5 +12,6 @@ public static class Paths {
     public const string ResetPasswordConfirmation = "ResetPasswordConfirmation";
     public const string AlumnoHub = "hubs/_alumno";
     public const string PersonalHub = "hubs/_personal";
+    public const string TurnosHub = "hubs/_turnos";
 
 }

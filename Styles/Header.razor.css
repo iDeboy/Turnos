@@ -5,6 +5,10 @@ div {
     grid-area: header;
 }
 
+span {
+    @apply text-center text-balance;
+}
+
 img {
     @apply h-full select-none;
 }

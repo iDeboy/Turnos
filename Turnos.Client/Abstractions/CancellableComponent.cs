@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Turnos.Client.Pages;
-public abstract class CancellablePage : ComponentBase, IDisposable {
+namespace Turnos.Client.Abstractions;
+public abstract class CancellableComponent : ComponentBase, IDisposable {
 
     private readonly CancellationTokenSource _cts = new();
 
-    protected CancellationToken Token => _cts.Token;
+    protected CancellationToken StoppingToken => _cts.Token;
 
     private bool _isDisposed;
 

@@ -1,0 +1,99 @@
+﻿@reference "./app.css";
+
+.container {
+    @apply flex size-full justify-center py-5;
+}
+
+::deep .filas {
+    @apply max-h-full min-h-full w-72 pr-4.5;
+}
+
+::deep .title {
+    @apply text-center text-xl font-extrabold text-black;
+}
+
+::deep .mud-selected-item {
+    @apply !text-tecnm-500;
+    background-color: rgba(42, 96, 153, 0.058823529411764705) !important;
+}
+
+::deep .item-fila {
+    border-radius: 5px;
+}
+
+::deep .fila-layout {
+    @apply grid items-center;
+    grid-template-columns: 1fr 4rem;
+}
+
+    ::deep .fila-layout span {
+        @apply overflow-hidden pl-2 text-sm font-medium tracking-tight text-nowrap text-ellipsis whitespace-nowrap;
+    }
+
+    ::deep .fila-layout div {
+        @apply flex size-full items-center gap-2;
+    }
+
+    ::deep .fila-layout.Abierta {
+        @apply border-l-4 border-l-green-400;
+    }
+
+    ::deep .fila-layout.Cerrada {
+        @apply border-l-4 border-l-red-400;
+    }
+
+label.Abierta {
+    @apply font-bold text-green-400;
+}
+
+label.Cerrada {
+    @apply font-bold text-red-400;
+}
+
+::deep .detalle {
+    @apply flex h-full flex-col gap-3;
+}
+
+::deep .password-card {
+    @apply bg-transparent border border-zinc-200;
+}
+
+::deep .turnos {
+    @apply flex max-h-full min-h-full w-96 flex-col gap-2 overflow-auto rounded-xl bg-white py-3;
+}
+
+::deep .item-turno {
+    @apply select-none;
+}
+
+::deep .turno-layout {
+    @apply flex items-center justify-between gap-5;
+}
+
+    ::deep .turno-layout span {
+        @apply px-2 text-sm font-medium tracking-tight;
+    }
+
+    ::deep .turno-layout .turno {
+        @apply overflow-hidden text-nowrap text-ellipsis whitespace-nowrap;
+    }
+
+    ::deep .turno-layout .estado {
+        @apply font-bold;
+    }
+
+        ::deep .turno-layout .estado.Pendiente {
+            @apply text-indigo-400;
+        }
+
+        ::deep .turno-layout .estado.Atendido {
+            @apply text-green-400;
+        }
+
+        ::deep .turno-layout .estado.Cancelado {
+            @apply text-red-400;
+        }
+
+        ::deep .turno-layout .estado.Atendiendo {
+            @apply text-purple-400;
+        }

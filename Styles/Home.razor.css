@@ -1,5 +1,5 @@
 ﻿@reference "./app.css";
 
 section {
-    @apply grid h-full w-full grid-flow-col grid-cols-3 justify-center;
+    @apply grid h-full w-full grid-flow-col grid-cols-3 items-center justify-center;
 }
