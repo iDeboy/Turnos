@@ -15,6 +15,9 @@ Styles/ResetPasswordConfirmation.razor.css|Turnos/Components/Auth/ResetPasswordC
 Styles/MainLayout.razor.css|Turnos/Components/Layout/MainLayout.razor.css
 Styles/Header.razor.css|Turnos/Components/Layout/Header.razor.css
 Styles/Footer.razor.css|Turnos/Components/Layout/Footer.razor.css
+Styles/MainLayout.razor.css|Turnos.Client/Components/Layout/MainLayout.razor.css
+Styles/Header.razor.css|Turnos.Client/Components/Layout/Header.razor.css
+Styles/Footer.razor.css|Turnos.Client/Components/Layout/Footer.razor.css
 Styles/Home.razor.css|Turnos.Client/Pages/Home.razor.css
 Styles/AlumnoHome.razor.css|Turnos.Client/Pages/AlumnoHome.razor.css
 Styles/PersonalHome.razor.css|Turnos.Client/Pages/PersonalHome.razor.css
