@@ -1,0 +1,20 @@
+﻿@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
+<div>
+    <span>
+        &copy&nbsp @Copyright
+    </span>
+    <AuthorizeView>
+        <form action="@Paths.Logout" method="post">
+            <AntiforgeryToken />
+            <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+            <MudButton Class="logout-button"
+                       ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled">
+                Cerrar sesión
+            </MudButton>
+        </form>
+    </AuthorizeView>
+</div>

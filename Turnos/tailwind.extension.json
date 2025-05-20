@@ -124,15 +124,15 @@
     },
     {
       "Input": "..\\Styles\\MainLayout.razor.css",
-      "Output": "Components\\Layout\\MainLayout.razor.css"
+      "Output": "..\\Turnos.Client\\Components\\Layout\\MainLayout.razor.css"
     },
     {
       "Input": "..\\Styles\\Header.razor.css",
-      "Output": "Components\\Layout\\Header.razor.css"
+      "Output": "..\\Turnos.Client\\Components\\Layout\\Header.razor.css"
     },
     {
       "Input": "..\\Styles\\Footer.razor.css",
-      "Output": "Components\\Layout\\Footer.razor.css"
+      "Output": ""
     },
     {
       "Input": "..\\Styles\\Home.razor.css",

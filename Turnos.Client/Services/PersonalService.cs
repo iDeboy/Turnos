@@ -80,10 +80,10 @@ internal sealed class PersonalService : IPersonalService {
         if (store.IsLoaded)
             return store.Items;
 
-        var stream = _connection.StreamAsync<KeyValuePair<Guid, FilaInfo>>(HubMethods.Personal.LoadPersonalFilas, cancellationToken);
+        var stream = _connection.StreamAsync<Entry<Guid, FilaInfo>>(HubMethods.Personal.LoadPersonalFilas, cancellationToken);
 
         await foreach (var entry in stream) {
-            store.AddItem(entry.Key, entry.Value);
+            store.AddItem(entry.Id, entry.Value);
             FilasUpdated?.Invoke(store.Items);
         }
 
@@ -149,10 +149,10 @@ internal sealed class PersonalService : IPersonalService {
         if (store.IsLoaded)
             return store.Items;
 
-        var stream = _connection.StreamAsync<KeyValuePair<Guid, SortedDictionary<uint, TurnoInfo>>>(HubMethods.Personal.LoadPersonalTurnos, cancellationToken);
+        var stream = _connection.StreamAsync<Entry<Guid, SortedDictionary<uint, TurnoInfo>>>(HubMethods.Personal.LoadPersonalTurnos, cancellationToken);
 
         await foreach (var entry in stream) {
-            store.AddItem(entry.Key, entry.Value);
+            store.AddItem(entry.Id, entry.Value);
             TurnosUpdated?.Invoke(store.Items);
         }
 

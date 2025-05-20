@@ -23,7 +23,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddSignalR(options => {
-    options.EnableDetailedErrors = true;
+    options.EnableDetailedErrors = false;
 });
 
 builder.Services.AddSingleton(typeof(IStoreService<,>), typeof(StoreService<,>));

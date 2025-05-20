@@ -77,10 +77,10 @@ internal sealed class AlumnoService : IAlumnoService {
 
         if (store.IsLoaded) return store.Items;
 
-        var stream = _connection.StreamAsync<KeyValuePair<Guid, FilaInfo>>(HubMethods.Alumno.LoadAlumnoFilas, cancellationToken);
+        var stream = _connection.StreamAsync<Entry<Guid, FilaInfo>>(HubMethods.Alumno.LoadAlumnoFilas, cancellationToken);
 
         await foreach (var entry in stream) {
-            store.AddItem(entry.Key, entry.Value);
+            store.AddItem(entry.Id, entry.Value);
             FilasUpdated?.Invoke(store.Items);
         }
 
@@ -99,10 +99,10 @@ internal sealed class AlumnoService : IAlumnoService {
 
         if (store.IsLoaded) return store.Items;
 
-        var stream = _connection.StreamAsync<KeyValuePair<Guid, TurnoInfo>>(HubMethods.Alumno.LoadAlumnoTurnos, cancellationToken);
+        var stream = _connection.StreamAsync<Entry<Guid, TurnoInfo>>(HubMethods.Alumno.LoadAlumnoTurnos, cancellationToken);
 
         await foreach (var entry in stream) {
-            store.AddItem(entry.Key, entry.Value);
+            store.AddItem(entry.Id, entry.Value);
             TurnosUpdated?.Invoke(store.Items);
         }
 

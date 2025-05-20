@@ -24,6 +24,7 @@ public partial class PersonalHome {
             if (_selectedInfoId == value) return;
 
             _selectedInfoId = value;
+
             SelectedInfoChanged();
         }
     }

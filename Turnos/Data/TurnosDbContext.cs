@@ -38,7 +38,7 @@ public sealed class TurnosDbContext : IdentityDbContext<User, Role, Guid>, IData
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-         
+
         optionsBuilder.UseNpgsql(_configuration.GetConnectionString("turnos"),
                 sql => {
                     sql.MigrationsAssembly(typeof(TurnosDbContext).Assembly)
@@ -48,8 +48,8 @@ public sealed class TurnosDbContext : IdentityDbContext<User, Role, Guid>, IData
                     sql.MapEnum<EstadoFila>("estado_fila", DbConstants.Schema);
                     sql.MapEnum<EstadoTurno>("estado_turno", DbConstants.Schema);
                 })
-            .UseSeeding(Seed)
-            .UseAsyncSeeding(SeedAsync);
+            /*.UseSeeding(Seed)
+            .UseAsyncSeeding(SeedAsync)*/;
 
     }
 
@@ -86,7 +86,7 @@ public sealed class TurnosDbContext : IdentityDbContext<User, Role, Guid>, IData
     }
 
     private async Task SeedAsync(DbContext context, bool operation, CancellationToken cancellationToken) {
-        
+
         var roleManager = context.GetService<RoleManager<Role>>();
 
         var role = await roleManager.FindByNameAsync(AppRoles.Alumno);

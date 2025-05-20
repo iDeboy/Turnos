@@ -25,7 +25,7 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
 
     [Authorize(Policy = Policies.IsAlumno)]
     [HubMethodName(HubMethods.Alumno.LoadAlumnoFilas)]
-    public async IAsyncEnumerable<KeyValuePair<Guid, FilaInfo>> LoadAlumnoFilas(
+    public async IAsyncEnumerable<Entry<Guid, FilaInfo>> LoadAlumnoFilas(
         [FromServices] IAlumnoService service,
         [EnumeratorCancellation] CancellationToken cancellationToken = default) {
 
@@ -42,7 +42,7 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
 
     [Authorize(Policy = Policies.IsAlumno)]
     [HubMethodName(HubMethods.Alumno.LoadAlumnoTurnos)]
-    public async IAsyncEnumerable<KeyValuePair<Guid, TurnoInfo>> LoadAlumnoTurnos(
+    public async IAsyncEnumerable<Entry<Guid, TurnoInfo>> LoadAlumnoTurnos(
         [FromServices] IAlumnoService service,
         [EnumeratorCancellation] CancellationToken cancellationToken = default) {
 
@@ -59,14 +59,14 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
 
     [Authorize(Policy = Policies.IsPersonal)]
     [HubMethodName(HubMethods.Personal.LoadPersonalFilas)]
-    public async IAsyncEnumerable<KeyValuePair<Guid, FilaInfo>> LoadPersonalFilas(
+    public async IAsyncEnumerable<Entry<Guid, FilaInfo>> LoadPersonalFilas(
         [FromServices] IPersonalService service,
         [EnumeratorCancellation] CancellationToken cancellationToken = default) {
 
         await service.Start(Context.User);
 
         var items = await service.LoadFilas(cancellationToken);
-
+    
         foreach (var entry in items) {
             if (cancellationToken.IsCancellationRequested) yield break;
             yield return entry;
@@ -75,7 +75,7 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
 
     [Authorize(Policy = Policies.IsPersonal)]
     [HubMethodName(HubMethods.Personal.LoadPersonalTurnos)]
-    public async IAsyncEnumerable<KeyValuePair<Guid, SortedDictionary<uint, TurnoInfo>>> LoadPersonalTurnos(
+    public async IAsyncEnumerable<Entry<Guid, SortedDictionary<uint, TurnoInfo>>> LoadPersonalTurnos(
         [FromServices] IPersonalService service,
         [EnumeratorCancellation] CancellationToken cancellationToken = default) {
 

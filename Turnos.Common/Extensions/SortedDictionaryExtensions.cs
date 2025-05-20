@@ -18,16 +18,21 @@ public static class SortedDictionaryExtensions {
 
     public static KeyValuePair<TKey, TValue> Min<TKey, TValue>(this SortedDictionary<TKey, TValue> dictionary) where TKey : notnull {
 
-        var layout = Unsafe.As<SortedDictionary<TKey, TValue>, SortedDictionaryLayout<TKey, TValue>>(ref dictionary);
+        if (dictionary.Count == 0) return default;
 
-        return layout.set.Min;
+        if (!OperatingSystem.IsBrowser()) {
+            var layout = Unsafe.As<SortedDictionary<TKey, TValue>, SortedDictionaryLayout<TKey, TValue>>(ref dictionary);
+            return layout.set.Min;
+        } 
+
+        return Enumerable.Min(dictionary);
     }
 
-    private sealed class SortedDictionaryLayout<TKey, TValue> where TKey : notnull {
+    private sealed class SortedDictionaryLayout<TKey, TValue> : SortedDictionary<TKey, TValue> where TKey : notnull {
 
-        public Dictionary<TKey, TValue>.KeyCollection keys;
-        public Dictionary<TKey, TValue>.ValueCollection values;
-        public readonly SortedSet<KeyValuePair<TKey, TValue>> set;
+        public Dictionary<TKey, TValue>.KeyCollection keys = default!;
+        public Dictionary<TKey, TValue>.ValueCollection values = default!;
+        public SortedSet<KeyValuePair<TKey, TValue>> set = default!;
 
     }
 
