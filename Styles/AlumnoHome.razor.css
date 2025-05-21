@@ -28,7 +28,7 @@
 
 ::deep .fila-layout {
     @apply grid items-center;
-    grid-template-columns: 1fr 2rem;
+    grid-template-columns: calc(100% - 2rem) 2rem;
 }
 
     ::deep .fila-layout .text {
@@ -40,7 +40,7 @@
     }
 
     ::deep .fila-layout .icons {
-        @apply flex size-full items-center;
+        @apply flex size-full items-center justify-center;
     }
 
     ::deep .fila-layout.Abierta {

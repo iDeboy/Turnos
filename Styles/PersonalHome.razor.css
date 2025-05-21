@@ -23,7 +23,7 @@
 
 ::deep .fila-layout {
     @apply grid items-center;
-    grid-template-columns: 1fr 4rem;
+    grid-template-columns: calc(100% - 4rem) 4rem;
 }
 
     ::deep .fila-layout span {

@@ -3,9 +3,10 @@
 
 @inject ISnackbar Snackbar
 @inject IAlumnoService AlumnoService
+@inject ILogger<AlumnoHome> Logger
 
 <section class="container">
-	<Card Class="filas" TitleClass="title">
+	<Card Class="filas" TitleClass="title" ContentClass="overflow-y-auto">
 
 		<TitleTemplate>
 			Filas
