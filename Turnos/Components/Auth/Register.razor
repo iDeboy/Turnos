@@ -1,13 +1,15 @@
 ﻿@page "/Register"
-@using Turnos.Client.Abstractions
+@rendermode InteractiveServer
 
 @inject UserManager<User> UserManager
 @inject IUserStore<User> UserStore
 @inject SignInManager<User> SignInManager
 @inject IEmailSender<User> EmailSender
 @inject ILogger<Register> Logger
-@inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IPasswordHasher<User> PasswordHasher
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
 <Notification Label="@_errorMessage" NotificationType="NotificationType.Error" />
 
@@ -20,38 +22,57 @@
         </TitleTemplate>
 
         <ContentTemplate>
-            <EditForm class="register-form" Model="Model"
-                      asp-route-returnUrl="@ReturnUrl"
-                      OnValidSubmit="RegisterUser"
-                      FormName="register">
-
-                <DataAnnotationsValidator />
+            <MudForm @ref=_form Model="Model" Spacing="1">
 
                 <UserKindSelector @bind-Value=Model.Kind />
 
-                <InputField @bind-Value=@Model.Name
-                            InputType="InputType.Text"
-                            Label="Nombre completo" Required Validate />
+                <MudTextField @bind-Value=Model.Name
+                              For="() => Model.Name"
+                              Label="Nombre completo"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              InputType="InputType.Text" Required />
 
-                <InputField @bind-Value=@Model.Email
-                            InputType="InputType.Text"
-                            Label="Correo" Required Validate />
+                <MudTextField @bind-Value=Model.Email
+                              For="() => Model.Email"
+                              Label="Correo"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              InputType="InputType.Text" Required />
 
-                <InputField @bind-Value=@Model.Password
-                            InputType="InputType.Password"
-                            Label="Contraseña" Required Validate />
+                <MudTextField @bind-Value=Model.Password
+                              For="() => Model.Password"
+                              Label="Contraseña"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              InputType="InputType.Password" Required />
 
-                <InputField @bind-Value=@Model.ConfirmPassword
-                            InputType="InputType.Password"
-                            Label="Confirmar contraseña" Required Validate />
+                <MudTextField @bind-Value=Model.ConfirmPassword
+                              For="() => Model.ConfirmPassword"
+                              Label="Confirmar contraseña"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              InputType="InputType.Password" Required />
 
+                @if (Model.Kind is UserKind.Personal) {
+                    <MudTextField @bind-Value=@Model.MasterKey
+                                  Validation="@(new Func<string, string?>(ValidateMasterKey))"
+                                  Label="Clave maestra"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  InputType="InputType.Password"
+                                  RequiredError="Debes ingresar la clave maestra."
+                                  Required />
+                }
+
+                @* ButtonType="ButtonType.Submit" *@
                 <MudButton Class="submit-button"
-                           ButtonType="ButtonType.Submit"
-                           Variant="Variant.Filled">
+                           Variant="Variant.Filled"
+                           OnClick="RegisterUser">
                     Registrarse
                 </MudButton>
 
-            </EditForm>
+            </MudForm>
         </ContentTemplate>
 
         <ActionTemplate>

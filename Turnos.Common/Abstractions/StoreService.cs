@@ -42,4 +42,12 @@ public sealed class StoreService<TKey, TItem> : IStoreService<TKey, TItem> where
     public bool TryGetItem(TKey key, [MaybeNullWhen(false)] out TItem item) {
         return _items.TryGetValue(key, out item);
     }
+
+    public bool ContainsItem(TKey key) {
+        return _items.ContainsKey(key);
+    }
+    public void Clear() {
+        _items.Clear();
+        _isLoaded = false;
+    }
 }

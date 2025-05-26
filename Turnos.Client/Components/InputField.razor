@@ -5,7 +5,8 @@
         <InputText id=@Id type=@InputType.ToDescriptionString()
                    required=@Required
                    autocomplete=@Autocomplete
-                   ValueExpression=ValueExpression />
+                   ValueExpression=ValueExpression
+                   ValueChanged=ValueChanged />
 
         @if (!string.IsNullOrEmpty(Label)) {
             @if (Required) {

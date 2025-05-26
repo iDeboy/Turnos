@@ -56,11 +56,6 @@ public partial class PersonalHome {
         _turnos = turnos;
         InvokeAsync(StateHasChanged);
     }
-
-    protected override void OnInitialized() {
-        Document.KeyDown += UnselectFila;
-    }
-
     private void SelectedInfoChanged() {
         ClearPasswords();
     }
@@ -279,8 +274,6 @@ public partial class PersonalHome {
         base.Dispose(disposing);
 
         if (!disposing) return;
-
-        Document.KeyDown -= UnselectFila;
 
         PersonalService.FilasUpdated -= OnFilasUpdated;
 

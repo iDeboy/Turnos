@@ -43,4 +43,9 @@ public sealed class ScopedStoreService<TKey, TItem> : IScopedStoreService<TKey, 
     public bool TryGetItem(TKey key, [MaybeNullWhen(false)] out TItem value) {
         return _items.TryGetValue(key, out value);
     }
+
+    public void Clear() {
+        _items.Clear();
+        _isLoaded = false;
+    }
 }

@@ -26,7 +26,9 @@ internal static class EmailExtensions {
                 RequiresAuthentication = true,
             });
 
-        services.AddTransient<IEmailSender<User>, TurnosEmailSender>();
+        services.AddTransient<TurnosEmailSender>();
+        services.AddTransient<IEmail<User>, TurnosEmailSender>(s => s.GetRequiredService<TurnosEmailSender>());
+        services.AddTransient<IEmailSender<User>, TurnosEmailSender>(s => s.GetRequiredService<TurnosEmailSender>());
 
         return services;
     }

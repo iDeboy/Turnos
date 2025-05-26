@@ -9,6 +9,7 @@ using Turnos.Common.Events;
 using Turnos.Common.Infos;
 using Turnos.Data;
 using Turnos.Data.Auth;
+using Turnos.EmailSenders;
 using Turnos.Events;
 
 namespace Turnos.Services;
@@ -23,6 +24,7 @@ internal sealed class AlumnoService : IAlumnoService {
     private readonly IEventProvider _eventProvider;
     private readonly IEventNotifier _eventNotifier;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IEmail<User> _email;
 
     public event Action<IReadOnlyDictionary<Guid, FilaInfo>>? FilasUpdated;
     public event Action<IReadOnlyDictionary<Guid, TurnoInfo>>? TurnosUpdated;
@@ -34,13 +36,14 @@ internal sealed class AlumnoService : IAlumnoService {
     private IDisposable? _suscriptionTurnoCreated;
     private IDisposable? _suscriptionTurnoChanged;
 
-    public AlumnoService(IStoreService<Guid, FilaInfo> store, TurnosDbContext db, IEventProvider eventProvider, IEventNotifier eventNotifier, IPasswordHasher<User> passwordHasher, IScopedStoreService<Guid, TurnoInfo> turnosStore) {
+    public AlumnoService(IStoreService<Guid, FilaInfo> store, TurnosDbContext db, IEventProvider eventProvider, IEventNotifier eventNotifier, IPasswordHasher<User> passwordHasher, IScopedStoreService<Guid, TurnoInfo> turnosStore, IEmail<User> email) {
         _db = db;
         _filasStore = store;
         _turnosStore = turnosStore;
         _eventProvider = eventProvider;
         _eventNotifier = eventNotifier;
         _passwordHasher = passwordHasher;
+        _email = email;
     }
 
     public Task Start(ClaimsPrincipal? user) {
@@ -76,8 +79,9 @@ internal sealed class AlumnoService : IAlumnoService {
 
         var store = @lock.Value;
 
-        if (store.IsLoaded)
-            return store.Items;
+        store.Clear();
+        /*if (store.IsLoaded)
+            return store.Items;*/
 
         var query = _db.Filas
             .AsNoTrackingWithIdentityResolution()
@@ -170,8 +174,9 @@ internal sealed class AlumnoService : IAlumnoService {
 
         var store = l.Value;
 
-        if (store.IsLoaded)
-            return store.Items;
+        /*if (store.IsLoaded)
+            return store.Items;*/
+        store.Clear();
 
         try {
             return await _db.Database.CreateExecutionStrategy()
@@ -200,6 +205,7 @@ internal sealed class AlumnoService : IAlumnoService {
 
         var fila = await _db.Filas
             .Include(f => f.Turnos)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(f => f.Id == filaId, cancellationToken);
 
         if (fila is null)
@@ -244,6 +250,24 @@ internal sealed class AlumnoService : IAlumnoService {
         };
 
         await _eventNotifier.NotifyTurnoCreated(filaId, info, fila.PersonalId.ToString(), userId);
+
+        if (!_filasStore.TryGetItem(filaId, out var filaInfo)) return true;
+
+        var ownerFila = new Personal {
+            Email = filaInfo.Author.Email,
+            Name = filaInfo.Author.Name,
+        };
+
+        var ownerTurno = new Alumno {
+            Email = email,
+            Name = name,
+        };
+
+        List<Task> tasks = new(2);
+        tasks.Add(_email.SendMessage(ownerTurno, "Turno creado", $"Has creado un turno en la fila {fila.Name} a las {info.CreatedAt:dd/MM/yyyy hh:mm:ss tt}"));
+        tasks.Add(_email.SendMessage(ownerFila, "Turno creado", $"El alumno {ownerTurno.Name} ha creado un turno en la fila {fila.Name} a las {info.CreatedAt:dd/MM/yyyy hh:mm:ss tt}"));
+
+        await Task.WhenAll(tasks);
 
         return true;
 
@@ -310,6 +334,24 @@ internal sealed class AlumnoService : IAlumnoService {
 
         await _eventNotifier.NotifyTurnoChanged(filaId, info, EstadoTurno.Cancelado, turno.Fila.PersonalId.ToString(), userId);
 
+        if (!_filasStore.TryGetItem(filaId, out var filaInfo)) return true;
+
+        var ownerFila = new Personal {
+            Email = filaInfo.Author.Email,
+            Name = filaInfo.Author.Name,
+        };
+
+        var ownerTurno = new Alumno {
+            Email = email,
+            Name = name,
+        };
+
+        List<Task> tasks = new(2);
+        tasks.Add(_email.SendMessage(ownerTurno, "Turno cancelado", $"Has cancelado tu turno en la fila {filaInfo.Name} a las {now:dd/MM/yyyy hh:mm:ss tt}"));
+        tasks.Add(_email.SendMessage(ownerFila, "Turno cancelado", $"El alumno {ownerTurno.Name} ha cancelado su turno en la fila {filaInfo.Name} a las {now:dd/MM/yyyy hh:mm:ss tt}"));
+
+        await Task.WhenAll(tasks);
+
         return true;
     }
 
@@ -324,6 +366,7 @@ internal sealed class AlumnoService : IAlumnoService {
         store.AddItem(id, info);
 
         FilasUpdated?.Invoke(store.Items);
+
     }
 
     private async Task OnFilaChanged(FilaEventArgs args) {
@@ -363,6 +406,8 @@ internal sealed class AlumnoService : IAlumnoService {
         var store = l.Value;
 
         store.AddItem(filaId, turno);
+
+
 
         TurnosUpdated?.Invoke(store.Items);
 

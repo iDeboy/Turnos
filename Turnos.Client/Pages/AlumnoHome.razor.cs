@@ -30,10 +30,6 @@ public partial class AlumnoHome {
     private FilaInfo? SelectedFilaInfo => _filas?.TryGetValue(SelectedFilaInfoId, out var fila) == true ? fila : null;
     private TurnoInfo? SelectedTurnoInfo => _turnos?.TryGetValue(SelectedFilaInfoId, out var turno) == true ? turno : null;
 
-    protected override void OnInitialized() {
-        Document.KeyDown += UnselectFila;
-    }
-
     private void UnselectFila(KeyboardEventArgs args) {
 
         if (args.Key == "Escape") {
@@ -132,8 +128,6 @@ public partial class AlumnoHome {
         base.Dispose(disposing);
 
         if (!disposing) return;
-
-        Document.KeyDown -= UnselectFila;
 
         AlumnoService.FilasUpdated -= OnFilasUpdated;
 

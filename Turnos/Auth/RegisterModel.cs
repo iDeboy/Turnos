@@ -22,6 +22,10 @@ public sealed class RegisterModel {
     public string Password { get; set; } = string.Empty;
 
     [DataType(DataType.Password)]
+    [Required(ErrorMessage = "Debes confirmar la contraseña.")]
     [Compare(nameof(Password), ErrorMessage = "Las contraseñas no coinciden.")]
     public string ConfirmPassword { get; set; } = string.Empty;
+
+    [DataType(DataType.Password)]
+    public string MasterKey { get; set; } = string.Empty;
 }

@@ -12,6 +12,7 @@ using Turnos.Common.Extensions;
 using Turnos.Common.Infos;
 using Turnos.Data;
 using Turnos.Data.Auth;
+using Turnos.EmailSenders;
 using Turnos.Events;
 
 namespace Turnos.Services;
@@ -27,6 +28,7 @@ internal sealed class PersonalService : IPersonalService {
     private readonly IEventProvider _eventProvider;
     private readonly IEventNotifier _eventNotifier;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IEmail<User> _email;
 
     private IDisposable? _suscriptionFilaAdded;
     private IDisposable? _suscriptionFilaChanged;
@@ -38,13 +40,14 @@ internal sealed class PersonalService : IPersonalService {
     public event Action<IReadOnlyDictionary<Guid, FilaInfo>>? FilasUpdated;
     public event Action<IReadOnlyDictionary<Guid, SortedDictionary<uint, TurnoInfo>>>? TurnosUpdated;
 
-    public PersonalService(TurnosDbContext db, IEventProvider eventProvider, IEventNotifier eventNotifier, IPasswordHasher<User> passwordHasher, IScopedStoreService<Guid, FilaInfo> store, IScopedStoreService<Guid, SortedDictionary<uint, TurnoInfo>> turnosStore) {
+    public PersonalService(TurnosDbContext db, IEventProvider eventProvider, IEventNotifier eventNotifier, IPasswordHasher<User> passwordHasher, IScopedStoreService<Guid, FilaInfo> store, IScopedStoreService<Guid, SortedDictionary<uint, TurnoInfo>> turnosStore, IEmail<User> email) {
         _db = db;
         _eventProvider = eventProvider;
         _eventNotifier = eventNotifier;
         _passwordHasher = passwordHasher;
         _filasStore = store;
         _turnosStore = turnosStore;
+        _email = email;
     }
 
     public Task Start(ClaimsPrincipal? user) {
@@ -81,8 +84,9 @@ internal sealed class PersonalService : IPersonalService {
 
         var store = l.Value;
 
-        if (store.IsLoaded)
-            return store.Items;
+        store.Clear();
+        /*if (store.IsLoaded)
+            return store.Items;*/
 
         var query = _db.Filas
             .AsNoTrackingWithIdentityResolution()
@@ -164,6 +168,14 @@ internal sealed class PersonalService : IPersonalService {
 
             await _eventNotifier.NotifyFilaCreated(fila.Id, info, userId);
 
+            var owner = new Personal {
+                Email = email,
+                Name = name,
+            };
+
+            await _email
+                .SendMessage(owner, "Fila creada", $"Has creado la fila {info.Name} a las {info.CreatedAt:dd/MM/yyyy hh:mm:ss tt}.");
+
             return true;
 
         }
@@ -205,13 +217,15 @@ internal sealed class PersonalService : IPersonalService {
             out var name))
             return false;
 
+        var now = DateTimeOffset.UtcNow;
+
         try {
 
             var editedRows = await _db.Filas
                 .Where(f => f.Id == filaId && f.PersonalId == personalId)
                 .ExecuteUpdateAsync(
                     f => f.SetProperty(f => f.Estado, estado)
-                        .SetProperty(f => f.UpdatedAtUtc, DateTimeOffset.UtcNow),
+                        .SetProperty(f => f.UpdatedAtUtc, now),
                     cancellationToken);
 
             if (editedRows == 0)
@@ -232,6 +246,50 @@ internal sealed class PersonalService : IPersonalService {
         };
 
         await _eventNotifier.NotifyFilaChanged(filaId, info, userId);
+
+        var owner = new Personal {
+            Email = email,
+            Name = name,
+        };
+
+        string subject = estado switch {
+            EstadoFila.Abierta => $"Fila {info.Name} abierta",
+            EstadoFila.Cerrada => $"Fila {info.Name} cerrada",
+            _ => $"Estado de la fila {info.Name} cambiado"
+        };
+
+        string ownerMessage = estado switch {
+            EstadoFila.Abierta => $"Has abierto la fila {info.Name} a las {now.ToLocalTimeZone():dd/MM/yyyy hh:mm:ss tt}.",
+            EstadoFila.Cerrada => $"Has cerrado la fila {info.Name} a las {now.ToLocalTimeZone():dd/MM/yyyy hh:mm:ss tt}.",
+            _ => $"Has cambiado al estado {estado} la fila {info.Name} a las {now.ToLocalTimeZone():dd/MM/yyyy hh:mm:ss tt}."
+        };
+
+        string alumnoMessage = estado switch {
+            EstadoFila.Abierta => $"Se ha abierto la fila {info.Name} a las {now.ToLocalTimeZone():dd/MM/yyyy hh:mm:ss tt}.",
+            EstadoFila.Cerrada => $"Se ha  cerrado la fila {info.Name} a las {now.ToLocalTimeZone():dd/MM/yyyy hh:mm:ss tt}.",
+            _ => $"Se ha cambiado al estado {estado} la fila {info.Name} a las {now.ToLocalTimeZone():dd/MM/yyyy hh:mm:ss tt}."
+        };
+
+        _turnosStore.TryGetItem(filaId, out var turnos);
+
+        List<Task> tasks = new(1 + turnos?.Count ?? 0);
+
+        tasks.Add(_email.SendMessage(owner, subject, ownerMessage));
+
+        if (turnos is not null) {
+
+            foreach (var turno in turnos.Values) {
+
+                var alumno = new Alumno {
+                    Email = turno.Alumno.Email,
+                    Name = turno.Alumno.Name
+                };
+
+                tasks.Add(_email.SendMessage(alumno, subject, alumnoMessage));
+            }
+        }
+
+        await Task.WhenAll(tasks);
 
         return true;
     }
@@ -319,7 +377,43 @@ internal sealed class PersonalService : IPersonalService {
             if (rowsDeleted == 0)
                 return false;
 
+            var now = DateTimeOffset.UtcNow;
+            _filasStore.TryGetItem(filaId, out var fila);
+            _turnosStore.TryGetItem(filaId, out var turnos);
+
             await _eventNotifier.NotifyFilaDeleted(filaId, userId);
+
+            if (fila is null) return true;
+
+            var owner = new Personal {
+                Email = email,
+                Name = name,
+            };
+
+            string subject = $"Fila {fila.Name} eliminada";
+
+            string ownerMessage = $"Has eliminado la fila {fila.Name} a las {now.ToLocalTimeZone():dd/MM/yyyy hh:mm:ss tt}.";
+
+            string alumnoMessage = $"Se ha elimiado la fila {fila.Name} a las {now.ToLocalTimeZone():dd/MM/yyyy hh:mm:ss tt}.";
+
+            List<Task> tasks = new(1 + turnos?.Count ?? 0);
+
+            tasks.Add(_email.SendMessage(owner, subject, ownerMessage));
+
+            if (turnos is not null) {
+
+                foreach (var turno in turnos.Values) {
+
+                    var alumno = new Alumno {
+                        Email = turno.Alumno.Email,
+                        Name = turno.Alumno.Name
+                    };
+
+                    tasks.Add(_email.SendMessage(alumno, subject, alumnoMessage));
+                }
+            }
+
+            await Task.WhenAll(tasks);
 
             return true;
         }
@@ -340,8 +434,9 @@ internal sealed class PersonalService : IPersonalService {
 
         var store = l.Value;
 
-        if (store.IsLoaded)
-            return store.Items;
+        store.Clear();
+        /*if (store.IsLoaded)
+            return store.Items;*/
 
         var query = _db.Filas
             .AsNoTrackingWithIdentityResolution()
@@ -387,9 +482,9 @@ internal sealed class PersonalService : IPersonalService {
         using var transaction = await _db.Database.BeginTransactionAsync(IsolationLevel.Serializable, cancellationToken);
 
         var fila = await _db.Filas
-            .AsSplitQuery()
             .Include(f => f.Personal)
             .Include(f => f.Turnos)
+            .AsSplitQuery()
             .Where(f => f.Id == filaId)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -460,11 +555,47 @@ internal sealed class PersonalService : IPersonalService {
         };
 
         await _eventNotifier.NotifyTurnoChanged(filaId, turnoInfo, estado, personalId, turno.AlumnoId.ToString());
-
-        // TODO: Cuando se altere la fila, hay que actualizar el tiempo
-        // de atencion y calcular los lugares arriba solo en los turnos pendientes
         await _eventNotifier.NotifyFilaChanged(filaId, filaInfo, personalId);
 
+        var ownerFila = new Personal {
+            Name = filaInfo.Author.Name,
+            Email = filaInfo.Author.Email,
+        };
+
+        var ownerTurno = new Alumno {
+            Name = turnoInfo.Alumno.Name,
+            Email = turnoInfo.Alumno.Email,
+        };
+
+        string subject = estado switch {
+            EstadoTurno.Atendiendo => "Atendiendo turno",
+            EstadoTurno.Atendido => "Turno atendido",
+            EstadoTurno.Cancelado => "Turno cancelado",
+            _ => "",
+        };
+
+        string? ownerFilaMessage = estado switch {
+            EstadoTurno.Atendiendo => $"Estás atendiendo al alumno {ownerTurno.Name} en la fila {filaInfo.Name}.",
+            EstadoTurno.Atendido => $"Has atendido al alumno {ownerTurno.Name} en la fila {filaInfo.Name}.",
+            EstadoTurno.Cancelado => $"Has cancelado el turno del alumno {ownerTurno.Name} en la fila {filaInfo.Name}.",
+            _ => null,
+        };
+
+        string? ownerTurnoMessage = estado switch {
+            EstadoTurno.Atendiendo => $"Estás siendo atendido en la fila {filaInfo.Name}.",
+            EstadoTurno.Atendido => $"Se ha atendido tu turno en la fila {filaInfo.Name}.",
+            EstadoTurno.Cancelado => $"Se ha cancelado tu turno en la fila {filaInfo.Name}.",
+            _ => null,
+        };
+
+        List<Task> tasks = new(2);
+        if (ownerFilaMessage is not null)
+            tasks.Add(_email.SendMessage(ownerFila, subject, ownerFilaMessage));
+
+        if (ownerTurnoMessage is not null)
+            tasks.Add(_email.SendMessage(ownerTurno, subject, ownerTurnoMessage));
+
+        await Task.WhenAll(tasks);
 
         return true;
     }

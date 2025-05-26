@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using MudBlazor;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -14,15 +16,38 @@ using Turnos.Data.Auth;
 namespace Turnos.Components.Auth;
 public partial class Register {
 
+    private const string MasterKeyHash = "AQAAAAIAAYagAAAAEPgbSG0SAllKVPPfjeZrpc/cDr2ZexPw3QEFVLvEi5N7+ulFwgbu41QUFuPPRxaBpg==";
+
     private string? _errorMessage;
 
-    [SupplyParameterFromForm]
+    private MudForm _form = default!;
+
+    // [SupplyParameterFromForm]
     private RegisterModel Model { get; set; } = new();
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
+    private string? ValidateMasterKey(string key) {
+
+        key ??= string.Empty;
+
+        var verifyResult = PasswordHasher.VerifyHashedPassword(null!, MasterKeyHash, Model.MasterKey);
+
+        if (verifyResult is PasswordVerificationResult.Failed) {
+            return "Contraseña maestra inválida.";
+        }
+
+        return null;
+    }
+
     private async Task RegisterUser() {
+
+        await _form.Validate();
+
+        if (!_form.IsValid) return;
+
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
 
         var user = User.Create(Model.Name, Model.Kind);
 
@@ -31,7 +56,7 @@ public partial class Register {
         var result = await UserManager.CreateAsync(user, Model.Password);
 
         if (!result.Succeeded) {
-            _errorMessage = "No se pudo registrar.";
+            Snackbar.Add("No se pudo registrar.", Severity.Error);
             return;
         }
 
@@ -51,11 +76,23 @@ public partial class Register {
 
         await EmailSender.SendConfirmationLinkAsync(user, Model.Email, HtmlEncoder.Default.Encode(callbackUrl));
 
-        RedirectManager.RedirectTo(
-                Paths.RegisterConfirmation,
-                new() { ["email"] = Model.Email, ["returnUrl"] = ReturnUrl });
+        var query = NavigationManager
+            .ToAbsoluteUri(Paths.RegisterConfirmation)
+            .GetLeftPart(UriPartial.Path);
+
+        var queryParams = NavigationManager.GetUriWithQueryParameters(query,
+            new Dictionary<string, object?>() {
+                ["email"] = Model.Email,
+                ["returnUrl"] = ReturnUrl,
+            });
+        
+        NavigationManager.NavigateTo(queryParams);
+
+        // RedirectManager.RedirectTo(
+        //         Paths.RegisterConfirmation,
+        //         new() { ["email"] = Model.Email, ["returnUrl"] = ReturnUrl });
     }
 
-    private IUserEmailStore<User> EmailStore => (IUserEmailStore<User>)UserStore;
+    private IUserEmailStore<User> EmailStore => (IUserEmailStore<User>) UserStore;
 
 }

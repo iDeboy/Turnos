@@ -16,6 +16,8 @@ internal sealed class AlumnoService : IAlumnoService {
     public event Action<IReadOnlyDictionary<Guid, FilaInfo>>? FilasUpdated;
     public event Action<IReadOnlyDictionary<Guid, TurnoInfo>>? TurnosUpdated;
 
+    private readonly ILogger<AlumnoService> _logger;
+
     private readonly IStoreService<Guid, TurnoInfo> _turnosStore;
     private readonly IStoreService<Guid, FilaInfo> _filasStore;
     private readonly HubConnection _connection;
@@ -27,7 +29,7 @@ internal sealed class AlumnoService : IAlumnoService {
     private IDisposable? _suscriptionTurnoCreated;
     private IDisposable? _suscriptionTurnoChanged;
 
-    public AlumnoService(NavigationManager navigationManager, IStoreService<Guid, FilaInfo> store, IStoreService<Guid, TurnoInfo> storeTurnos) {
+    public AlumnoService(NavigationManager navigationManager, IStoreService<Guid, FilaInfo> store, IStoreService<Guid, TurnoInfo> storeTurnos, ILogger<AlumnoService> logger) {
 
         _connection = new HubConnectionBuilder()
             .WithUrl(navigationManager.ToAbsoluteUri(Paths.TurnosHub))
@@ -38,6 +40,7 @@ internal sealed class AlumnoService : IAlumnoService {
 
         _filasStore = store;
         _turnosStore = storeTurnos;
+        _logger = logger;
     }
 
     private Task OnConnectionClosed(Exception? exception) {
@@ -157,6 +160,8 @@ internal sealed class AlumnoService : IAlumnoService {
 
     private async Task OnFilaDeleted(Guid id) {
 
+        _logger.LogInformation($"Fila {id} deleting");
+
         using var @lock = await _filasStore.LockAsync();
 
         var store = @lock.Value;
@@ -164,6 +169,8 @@ internal sealed class AlumnoService : IAlumnoService {
         store.DeleteItem(id);
 
         FilasUpdated?.Invoke(store.Items);
+
+        _logger.LogInformation($"Fila {id} deleted");
     }
 
     private async Task OnTurnoCreated(Guid filaId, TurnoInfo info) {

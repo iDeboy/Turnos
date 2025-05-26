@@ -16,5 +16,5 @@ public interface IStoreService<TKey, TItem> where TKey : notnull {
     void ChangeItem(TKey key, TItem newValue);
     void DeleteItem(TKey key);
 
-
+    void Clear();
 }

@@ -11,9 +11,16 @@ public static class SortedDictionaryExtensions {
 
     public static KeyValuePair<TKey, TValue> Max<TKey, TValue>(this SortedDictionary<TKey, TValue> dictionary) where TKey : notnull {
 
-        var layout = Unsafe.As<SortedDictionary<TKey, TValue>, SortedDictionaryLayout<TKey, TValue>>(ref dictionary);
+        if (dictionary.Count == 0) return default;
 
-        return layout.set.Max;
+        if (!OperatingSystem.IsBrowser()) {
+            var layout = Unsafe.As<SortedDictionary<TKey, TValue>, SortedDictionaryLayout<TKey, TValue>>(ref dictionary);
+            return layout.set.Max;
+        }
+
+        var comparer = new KeyValuePairComparer<TKey, TValue>(dictionary.Comparer);
+
+        return Enumerable.Max(dictionary, comparer);
     }
 
     public static KeyValuePair<TKey, TValue> Min<TKey, TValue>(this SortedDictionary<TKey, TValue> dictionary) where TKey : notnull {
@@ -23,9 +30,11 @@ public static class SortedDictionaryExtensions {
         if (!OperatingSystem.IsBrowser()) {
             var layout = Unsafe.As<SortedDictionary<TKey, TValue>, SortedDictionaryLayout<TKey, TValue>>(ref dictionary);
             return layout.set.Min;
-        } 
+        }
 
-        return Enumerable.Min(dictionary);
+        var comparer = new KeyValuePairComparer<TKey, TValue>(dictionary.Comparer);
+
+        return Enumerable.Min(dictionary, comparer);
     }
 
     private sealed class SortedDictionaryLayout<TKey, TValue> : SortedDictionary<TKey, TValue> where TKey : notnull {
@@ -34,6 +43,30 @@ public static class SortedDictionaryExtensions {
         public Dictionary<TKey, TValue>.ValueCollection values = default!;
         public SortedSet<KeyValuePair<TKey, TValue>> set = default!;
 
+    }
+
+    private sealed class KeyValuePairComparer<TKey, TValue> : Comparer<KeyValuePair<TKey, TValue>> {
+        internal IComparer<TKey> _keyComparer;
+
+        public KeyValuePairComparer(IComparer<TKey>? keyComparer) {
+            _keyComparer = keyComparer ?? Comparer<TKey>.Default;
+        }
+
+        public override int Compare(KeyValuePair<TKey, TValue> x, KeyValuePair<TKey, TValue> y) {
+            return _keyComparer.Compare(x.Key, y.Key);
+        }
+
+        public override bool Equals(object? obj) {
+            if (obj is KeyValuePairComparer<TKey, TValue> other) {
+                // Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
+                return this._keyComparer == other._keyComparer || this._keyComparer.Equals(other._keyComparer);
+            }
+            return false;
+        }
+
+        public override int GetHashCode() {
+            return this._keyComparer.GetHashCode();
+        }
     }
 
 }

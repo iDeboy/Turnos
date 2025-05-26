@@ -66,7 +66,7 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
         await service.Start(Context.User);
 
         var items = await service.LoadFilas(cancellationToken);
-    
+
         foreach (var entry in items) {
             if (cancellationToken.IsCancellationRequested) yield break;
             yield return entry;
@@ -110,6 +110,11 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
 
         await service.Start(Context.User);
 
+        await Task.WhenAll(
+            service.LoadFilas(Context.ConnectionAborted),
+            service.LoadTurnos(Context.ConnectionAborted)
+            );
+
         return await service.ChangeStateFila(filaId, oldFila, estado, Context.ConnectionAborted);
     }
 
@@ -132,6 +137,11 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
 
         await service.Start(Context.User);
 
+        await Task.WhenAll(
+            service.LoadFilas(Context.ConnectionAborted),
+            service.LoadTurnos(Context.ConnectionAborted)
+            );
+
         return await service.DeleteFila(id, Context.ConnectionAborted);
     }
 
@@ -142,6 +152,11 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
         [FromServices] IAlumnoService service) {
 
         await service.Start(Context.User);
+
+        await Task.WhenAll(
+            service.LoadFilas(Context.ConnectionAborted),
+            service.LoadTurnos(Context.ConnectionAborted)
+            );
 
         return await service.CreateTurno(filaId, password, Context.ConnectionAborted);
     }
@@ -154,15 +169,27 @@ public sealed class TurnosHub : Hub<ITurnosClient> {
 
         await service.Start(Context.User);
 
+        await Task.WhenAll(
+            service.LoadFilas(Context.ConnectionAborted),
+            service.LoadTurnos(Context.ConnectionAborted)
+            );
+
         return await service.CancelTurno(filaId, Context.ConnectionAborted);
     }
 
+    [Authorize(Policy = Policies.IsPersonal)]
+    [HubMethodName(HubMethods.Personal.ChangeStateTurno)]
     public async Task<bool> ChangeStateTurno(
         Guid filaId, TurnoInfo turno, EstadoTurno estado,
         [FromServices] IPersonalService service) {
 
         await service.Start(Context.User);
-        
+
+        await Task.WhenAll(
+            service.LoadFilas(Context.ConnectionAborted),
+            service.LoadTurnos(Context.ConnectionAborted)
+            );
+
         return await service.ChangeStateTurno(filaId, turno, estado, Context.ConnectionAborted);
     }
 
